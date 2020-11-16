@@ -78,9 +78,19 @@ const useStyles = makeStyles((theme) => ({
 const Landing = () => {
   const classes = useStyles();
   const [showInput, setShowInput] = useState(false);
+  const [pin, setPin] = useState("");
 
   const handleToggle = () => {
     setShowInput((prev) => !prev);
+  };
+
+  const handlePinInput = (e) => {
+    var pinInput = e.target.value.split("-").join(""); // remove hyphens
+    if (pinInput.length > 0) {
+      pinInput = pinInput.match(new RegExp(".{1,3}", "g")).join("-");
+    }
+    console.log(pinInput);
+    setPin(pinInput);
   };
 
   return (
@@ -104,7 +114,7 @@ const Landing = () => {
         </Typography>
         <div className={classes.buttonContainer}>
           <Button
-            variant={showInput ? "outlined": "contained"}
+            variant={showInput ? "outlined" : "contained"}
             color="primary"
             className={classes.buttonText}
             onClick={handleToggle}
@@ -129,6 +139,9 @@ const Landing = () => {
             InputProps={{
               className: classes.inputText,
             }}
+            value={pin}
+            onChange={handlePinInput}
+            inputProps={{ maxLength: 11 }}
           />
           <div>
             <Button
