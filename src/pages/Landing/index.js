@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Grid,
   Typography,
@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Image from "../../assets/images/landing.png";
+import { Context as QuizContext } from "../../context/QuizContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
   pinInput: {
     marginBottom: theme.spacing(2),
+    marginRight: "10px",
     "& .MuiInputLabel-root": {
       color: "white",
     },
@@ -75,22 +77,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Landing = () => {
+const Landing = ({ history }) => {
   const classes = useStyles();
+
+  const {
+    state: { errorMessage },
+    joinSession,
+  } = useContext(QuizContext);
   const [showInput, setShowInput] = useState(false);
   const [pin, setPin] = useState("");
+  const [username, setUsername] = useState("");
 
   const handleToggle = () => {
     setShowInput((prev) => !prev);
   };
 
   const handlePinInput = (e) => {
-    var pinInput = e.target.value.split("-").join(""); // remove hyphens
+    var pinInput = e.target.value.split("-").join("");
     if (pinInput.length > 0) {
       pinInput = pinInput.match(new RegExp(".{1,3}", "g")).join("-");
     }
-    console.log(pinInput);
     setPin(pinInput);
+  };
+
+  const handleSubmit = () => {
+    let formattedPin = pin.split("-").join("");
+    joinSession({ formattedPin, username, history });
   };
 
   return (
@@ -131,23 +143,39 @@ const Landing = () => {
           </Button>
         </div>
         <Collapse in={showInput}>
-          <TextField
-            label="PIN"
-            variant="outlined"
-            color="secondary"
-            className={classes.pinInput}
-            InputProps={{
-              className: classes.inputText,
-            }}
-            value={pin}
-            onChange={handlePinInput}
-            inputProps={{ maxLength: 11 }}
-          />
+          <div style={{display:"flex", alignItems:"center"}}>
+            <TextField
+              label="PIN"
+              variant="outlined"
+              color="secondary"
+              className={classes.pinInput}
+              InputProps={{
+                className: classes.inputText,
+              }}
+              value={pin}
+              onChange={handlePinInput}
+              inputProps={{ maxLength: 11 }}
+            />
+            <TextField
+              label="Username"
+              variant="outlined"
+              color="secondary"
+              className={classes.pinInput}
+              InputProps={{
+                className: classes.inputText,
+              }}
+              value={username}
+              onChange={(e)=>setUsername(e.target.value)}
+              inputProps={{ maxLength: 12 }}
+            />    
+          </div>
+          {errorMessage}
           <div>
             <Button
               variant="contained"
               color="primary"
               className={classes.buttonText}
+              onClick={handleSubmit}
             >
               Join Session
             </Button>

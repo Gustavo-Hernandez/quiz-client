@@ -1,6 +1,10 @@
 import './App.css';
+import React, { useEffect } from "react";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import Landing from './pages/Landing';
+import Dashboard from './pages/Dashboard';
+import { Route, Switch } from "react-router-dom";
+import {Context as QuizContext} from "./context/QuizContext";
 
 const theme = createMuiTheme({
   palette: {
@@ -43,9 +47,25 @@ const theme = createMuiTheme({
 });
 
 function App() {
+
+  const {relog, state:{session}} = React.useContext(QuizContext);
+
+  const handleRelog = () =>{
+    const storedSession = JSON.parse(localStorage.getItem("session"));
+    if(!session.isActive && storedSession){
+      relog({...storedSession});
+    }
+  }
+  useEffect(()=>{
+    handleRelog();
+  },[]);
+
   return (
-    <ThemeProvider theme={theme}>
-      <Landing/>
+      <ThemeProvider theme={theme}>
+      <Switch>
+        {session.isActive  && <Route path="/dashboard" component={Dashboard}/>}
+        <Route path="/" component={Landing}/>
+      </Switch>
     </ThemeProvider>
   );
 }
