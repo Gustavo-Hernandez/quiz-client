@@ -1,8 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Context as QuizContext } from "../../context/QuizContext";
-import { Button, ButtonGroup, Tooltip, Fab, Popover, Typography, Grid } from "@material-ui/core";
+import { Button, ButtonGroup, Tooltip, Fab, Popover } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { ChatBubble, Close } from "@material-ui/icons";
+import socketIOClient from "socket.io-client";
 import Chat from "./Chat";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,6 +37,14 @@ const Dashboard = () => {
   const [showChat, setShowChat] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const classes = useStyles();
+  const ENDPOINT = "http://localhost:8080";
+
+  useEffect(()=>{
+    const socket = socketIOClient(ENDPOINT);
+    socket.on('connection', (socket) => {
+      console.log(`Session ${session.pin} connected`);
+    });
+  },[session.pin]);
 
   const handleToggle = (event) => {
     setAnchorEl(event.currentTarget);
