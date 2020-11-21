@@ -18,8 +18,8 @@ const useStyles = makeStyles((theme) => ({
   },
   messageContainer: {
     flex: "1 1 auto",
-    minHeight: "250px",
-    minWidth: "300px",
+    height: "250px",
+    width: "300px",
     overflowY:"scroll",
   },
   actionContainer: {
@@ -34,8 +34,11 @@ const Chat = ({ messages, sendChatMessage }) => {
   const [input, setInput] = useState("");
 
   const handleSubmit = () => {
-    sendChatMessage(input);
-    setInput("");
+    if (input.trim().length > 0) {
+      sendChatMessage(input);
+      setInput("");
+    }
+
   };
 
   const messagesComponent = messages.map((message, index) => (
