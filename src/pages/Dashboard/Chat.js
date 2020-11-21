@@ -9,6 +9,7 @@ import {
   CardHeader,
   Divider,
 } from "@material-ui/core";
+import Message from "./Message";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Chat = ({ messages, sendChatMessage }) => {
+const Chat = ({ messages, sendChatMessage, username }) => {
   const classes = useStyles();
   const [input, setInput] = useState("");
 
@@ -42,7 +43,7 @@ const Chat = ({ messages, sendChatMessage }) => {
   };
 
   const messagesComponent = messages.map((message, index) => (
-    <p key={index}>{`${message.sender}: ${message.message}`}</p>
+    <Message key={index} {...message} username={username}/>
   ));
 
   return (

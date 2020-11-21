@@ -1,9 +1,15 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Context as QuizContext } from "../../context/QuizContext";
 import { Button, ButtonGroup, Tooltip, Fab, Popover } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { ChatBubble, Close } from "@material-ui/icons";
-import { socket } from "../../api/socketHandler";
+import {
+  initiateSocket,
+  disconnectSocket,
+  subscribeToChat,
+  sendFeedback,
+  sendMessage,
+} from "../../api/socketHandler";
 import Chat from "./Chat";
 
 const useStyles = makeStyles((theme) => ({
@@ -39,34 +45,19 @@ const Dashboard = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const classes = useStyles();
 
-
-  const sendFeedback = (value) => {
-    socket.emit("teacher_feedback", {
-      message: value,
-    });
-  };
-
-  const handleSendChatMessage = (message) => {
-    socket.emit("chatMessage", { sender: session.user.username, message });
-  };
-
-  const handleMessages = useCallback((payload)=>{
-    setChatMessages([...chatMessages, payload]);
-  },[chatMessages]);
-
   //Handle Connection
   useEffect(() => {
-    return () => socket.disconnect();
-  }, []);
-
-  //Handle Socket.io Methods
-  useEffect(() => {
-    socket.on("message", (payload) => {
-      handleMessages(payload);
+    initiateSocket(session.pin, session.user.username);
+    subscribeToChat((err, data) => {
+      if (err) {
+        return;
+      }
+      setChatMessages((oldChats) => [...oldChats, data]);
     });
-  }, [handleMessages]);
-
-  
+    return () => {
+      disconnectSocket();
+    };
+  }, [session.pin, session.user.username]);
 
   const handleToggle = (event) => {
     setAnchorEl(event.currentTarget);
@@ -76,6 +67,10 @@ const Dashboard = () => {
   const handleClose = () => {
     setShowChat(false);
     setAnchorEl(null);
+  };
+
+  const handleMessage = (value) => {
+    sendMessage(session.user.username,value,session.pin);
   };
 
   const open = Boolean(anchorEl);
@@ -128,7 +123,7 @@ const Dashboard = () => {
           horizontal: "center",
         }}
       >
-        <Chat messages={chatMessages} sendChatMessage={handleSendChatMessage} />
+        <Chat messages={chatMessages} sendChatMessage={handleMessage} username={session.user.username} />
       </Popover>
       <Fab
         color="secondary"
