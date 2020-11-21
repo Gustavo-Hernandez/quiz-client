@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import { Context as QuizContext } from "../../context/QuizContext";
 import { Button, ButtonGroup, Tooltip, Fab, Popover } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -39,6 +39,7 @@ const Dashboard = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const classes = useStyles();
 
+
   const sendFeedback = (value) => {
     socket.emit("teacher_feedback", {
       message: value,
@@ -57,10 +58,14 @@ const Dashboard = () => {
   //Handle Socket.io Methods
   useEffect(() => {
     socket.on("message", (payload) => {
-      setChatMessages([...chatMessages, payload]);
+      handleMessages(payload);
     });
-  }, [chatMessages]);
+  }, [handleMessages]);
 
+  const handleMessages = useCallback((payload)=>{
+    setChatMessages([...chatMessages, payload]);
+  },[chatMessages]);
+  
   const handleToggle = (event) => {
     setAnchorEl(event.currentTarget);
     setShowChat((prev) => !prev);
