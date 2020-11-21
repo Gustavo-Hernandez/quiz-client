@@ -3,7 +3,7 @@ import { Context as QuizContext } from "../../context/QuizContext";
 import { Button, ButtonGroup, Tooltip, Fab, Popover } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { ChatBubble, Close } from "@material-ui/icons";
-import socketIOClient from "socket.io-client";
+import { socket } from "../../api/socketHandler";
 import Chat from "./Chat";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,15 +36,31 @@ const Dashboard = () => {
 
   const [showChat, setShowChat] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [chatMessages, setChatMessages] = useState([]);
   const classes = useStyles();
-  const ENDPOINT = "http://localhost:8080";
 
-  useEffect(()=>{
-    const socket = socketIOClient(ENDPOINT);
-    socket.on('connection', (socket) => {
-      console.log(`Session ${session.pin} connected`);
+  const sendFeedback = (value) => {
+    socket.emit("teacher_feedback", {
+      message: value,
     });
-  },[session.pin]);
+  };
+
+  const handleSendChatMessage = (message) => {
+    socket.emit("chatMessage", { sender: session.user.username, message });
+  };
+
+  //Handle Connection
+  useEffect(() => {
+    socket.connect();
+    return () => socket.disconnect();
+  }, []);
+
+  //Handle Socket.io Methods
+  useEffect(() => {
+    socket.on("message", (payload) => {
+      setChatMessages([...chatMessages, payload]);
+    });
+  }, [chatMessages]);
 
   const handleToggle = (event) => {
     setAnchorEl(event.currentTarget);
@@ -57,7 +73,7 @@ const Dashboard = () => {
   };
 
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const id = open ? "simple-popover" : undefined;
 
   return (
     <div className={classes.root}>
@@ -75,10 +91,20 @@ const Dashboard = () => {
           aria-label="contained primary button group"
         >
           <Tooltip title="This is anonymous, no one will know.">
-            <Button style={{ fontWeight: "bold" }}>I'm confused</Button>
+            <Button
+              style={{ fontWeight: "bold" }}
+              onClick={() => sendFeedback("I'm confused!")}
+            >
+              I'm confused
+            </Button>
           </Tooltip>
           <Tooltip title="This is anonymous, no one will know.">
-            <Button style={{ fontWeight: "bold" }}>Slow down</Button>
+            <Button
+              style={{ fontWeight: "bold" }}
+              onClick={() => sendFeedback("Teacher, please slow down!")}
+            >
+              Slow down
+            </Button>
           </Tooltip>
         </ButtonGroup>
       </div>
@@ -96,13 +122,13 @@ const Dashboard = () => {
           horizontal: "center",
         }}
       >
-          <Chat/>
+        <Chat messages={chatMessages} sendChatMessage={handleSendChatMessage} />
       </Popover>
       <Fab
         color="secondary"
         aria-label="add"
         className={classes.fab}
-        onClick={(e)=>handleToggle(e)}
+        onClick={(e) => handleToggle(e)}
         aria-describedby={id}
       >
         {showChat ? <Close /> : <ChatBubble />}

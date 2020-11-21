@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   TextField,
@@ -9,7 +9,7 @@ import {
   CardHeader,
   Divider,
 } from "@material-ui/core";
-import { SendRounded } from "@material-ui/icons";
+
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -29,8 +29,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Chat = () => {
+const Chat = ({messages, sendChatMessage}) => {
   const classes = useStyles();
+  const [input, setInput] = useState("");
+
+  const handleSubmit = ()=>{
+    sendChatMessage(input);
+    setInput("");
+  }
   return (
     <Card>
       <CardHeader title="Chat" className={classes.header} />
@@ -44,11 +50,14 @@ const Chat = () => {
           rowsMax={2}
           multiline
           variant="outlined"
+          value={input}
+          onChange={(e)=>setInput(e.target.value)}
         />
         <Button
           variant="contained"
           color="secondary"
           className={classes.button}
+          onClick={handleSubmit}
         >
           Send
         </Button>
