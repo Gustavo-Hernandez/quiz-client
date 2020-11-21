@@ -50,6 +50,10 @@ const Dashboard = () => {
     socket.emit("chatMessage", { sender: session.user.username, message });
   };
 
+  const handleMessages = useCallback((payload)=>{
+    setChatMessages([...chatMessages, payload]);
+  },[chatMessages]);
+
   //Handle Connection
   useEffect(() => {
     return () => socket.disconnect();
@@ -62,10 +66,8 @@ const Dashboard = () => {
     });
   }, [handleMessages]);
 
-  const handleMessages = useCallback((payload)=>{
-    setChatMessages([...chatMessages, payload]);
-  },[chatMessages]);
   
+
   const handleToggle = (event) => {
     setAnchorEl(event.currentTarget);
     setShowChat((prev) => !prev);
