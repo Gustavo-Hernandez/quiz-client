@@ -51,7 +51,6 @@ const Dashboard = () => {
 
   //Handle Connection
   useEffect(() => {
-    socket.connect();
     return () => socket.disconnect();
   }, []);
 

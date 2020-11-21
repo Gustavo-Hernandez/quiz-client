@@ -10,7 +10,6 @@ import {
   Divider,
 } from "@material-ui/core";
 
-
 const useStyles = makeStyles((theme) => ({
   header: {
     backgroundColor: "#0093E9",
@@ -21,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     flex: "1 1 auto",
     minHeight: "250px",
     minWidth: "300px",
+    overflowY:"scroll",
   },
   actionContainer: {
     display: "flex",
@@ -29,18 +29,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Chat = ({messages, sendChatMessage}) => {
+const Chat = ({ messages, sendChatMessage }) => {
   const classes = useStyles();
   const [input, setInput] = useState("");
 
-  const handleSubmit = ()=>{
+  const handleSubmit = () => {
     sendChatMessage(input);
     setInput("");
-  }
+  };
+
+  const messagesComponent = messages.map((message, index) => (
+    <p key={index}>{`${message.sender}: ${message.message}`}</p>
+  ));
+
   return (
     <Card>
       <CardHeader title="Chat" className={classes.header} />
-      <CardContent className={classes.messageContainer}></CardContent>
+      <CardContent className={classes.messageContainer}>
+        {messagesComponent}
+      </CardContent>
       <Divider />
       <CardActions className={classes.actionContainer}>
         <TextField
@@ -51,7 +58,7 @@ const Chat = ({messages, sendChatMessage}) => {
           multiline
           variant="outlined"
           value={input}
-          onChange={(e)=>setInput(e.target.value)}
+          onChange={(e) => setInput(e.target.value)}
         />
         <Button
           variant="contained"
