@@ -1,18 +1,22 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Context as QuizContext } from "../../context/QuizContext";
+import { makeStyles } from "@material-ui/core/styles";
+import { ChatBubble, Close } from "@material-ui/icons";
 import {
   Button,
   ButtonGroup,
   Tooltip,
   Fab,
   Popover,
+  Snackbar,
+  Slide,
+  IconButton,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { ChatBubble, Close } from "@material-ui/icons";
 import {
   initiateSocket,
   disconnectSocket,
   subscribeToChat,
+  subscribeToFeedback,
   sendFeedback,
   sendMessage,
 } from "../../api/socketHandler";
@@ -47,8 +51,8 @@ const useStyles = makeStyles((theme) => ({
     height: "70%",
     marginTop: "15px",
     display: "flex",
-    flexDirection:"column",
-    alignItems: "center"
+    flexDirection: "column",
+    alignItems: "center",
   },
 }));
 
@@ -59,6 +63,8 @@ const Dashboard = () => {
   } = useContext(QuizContext);
 
   const [showChat, setShowChat] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
   const classes = useStyles();
@@ -71,6 +77,13 @@ const Dashboard = () => {
         return;
       }
       setChatMessages((oldChats) => [...oldChats, data]);
+    });
+    subscribeToFeedback((err, data) => {
+      if (err) {
+        return;
+      }
+      setShowSnackbar(true);
+      setSnackMessage(data);
     });
     return () => {
       disconnectSocket();
@@ -96,6 +109,24 @@ const Dashboard = () => {
 
   return (
     <div className={classes.root}>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={showSnackbar}
+        autoHideDuration={1500}
+        onClose={() => setShowSnackbar(false)}
+        message={snackMessage}
+        TransitionComponent={Slide}
+        action={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setShowSnackbar(false)}
+          >
+            <Close fontSize="small" />
+          </IconButton>
+        }
+      />
       <div className={classes.buttonContainer}>
         <Button
           variant="contained"
@@ -112,7 +143,7 @@ const Dashboard = () => {
           <Tooltip title="This is anonymous, no one will know.">
             <Button
               style={{ fontWeight: "bold" }}
-              onClick={() => sendFeedback("I'm confused!")}
+              onClick={() => sendFeedback("I'm confused!", session.pin)}
             >
               I'm confused
             </Button>
@@ -120,7 +151,7 @@ const Dashboard = () => {
           <Tooltip title="This is anonymous, no one will know.">
             <Button
               style={{ fontWeight: "bold" }}
-              onClick={() => sendFeedback("Teacher, please slow down!")}
+              onClick={() => sendFeedback("Please slow down!", session.pin)}
             >
               Slow down
             </Button>
@@ -128,7 +159,7 @@ const Dashboard = () => {
         </ButtonGroup>
       </div>
       <div className={classes.quizContainer}>
-        <Quiz/>
+        <Quiz />
       </div>
       <Popover
         id={id}
