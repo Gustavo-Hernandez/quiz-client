@@ -5,7 +5,7 @@ const useStyles = makeStyles(() => ({
   root: {
     width: "90%",
     wordWrap: "break-word",
-    padding: "3px 5px",
+    padding: "3px 0",
     borderRadius: "8px",
     marginBottom: "5px",
   },
