@@ -99,6 +99,8 @@ const Dashboard = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+  const openReaction = Boolean(anchorChat);
+  const idReaction = open ? "simple-popover" : undefined;
 
   return (
     <div className={classes.root}>
@@ -160,8 +162,8 @@ const Dashboard = () => {
       
       {/* Reactions Popover  */}
       <Popover
-        id={id}
-        open={open}
+        id={idReaction}
+        open={openReaction}
         anchorEl={anchorEl}
         onClose={handleCloseReactions}
         anchorOrigin={{
@@ -173,7 +175,11 @@ const Dashboard = () => {
           horizontal: "left",
         }}
       >
-        <Reaction />
+        <Reaction 
+          sendReaction={handleReaction}
+
+        
+        />
       </Popover>
 
       <Fab
