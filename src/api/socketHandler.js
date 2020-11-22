@@ -33,6 +33,12 @@ export const sendMessage = (sender, message, room) => {
   }
 };
 
+export const sendReaction = (message, room) => {
+  if (socket) {
+    socket.emit("reactionMessage", { message, room });
+  }
+};
+
 export const sendFeedback = (value) => {
   if (socket) {
     socket.emit("teacher_feedback", value);

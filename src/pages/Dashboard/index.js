@@ -41,6 +41,8 @@ const Dashboard = () => {
   } = useContext(QuizContext);
 
   const [showChat, setShowChat] = useState(false);
+  const [showChat, setShowReactions] = useState(false);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
   const classes = useStyles();
@@ -59,12 +61,12 @@ const Dashboard = () => {
     };
   }, [session.pin, session.user.username]);
 
-  const handleToggle = (event) => {
+  const handleToggleChat = (event) => {
     setAnchorEl(event.currentTarget);
     setShowChat((prev) => !prev);
   };
 
-  const handleClose = () => {
+  const handleCloseChat = () => {
     setShowChat(false);
     setAnchorEl(null);
   };
@@ -72,6 +74,10 @@ const Dashboard = () => {
   const handleMessage = (value) => {
     sendMessage(session.user.username,value,session.pin);
   };
+  const handleReaction (value) => {
+    sendReaction(value,session.pin);
+  };
+
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -113,7 +119,24 @@ const Dashboard = () => {
         id={id}
         open={open}
         anchorEl={anchorEl}
-        onClose={handleClose}
+        onClose={handleCloseChat}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+      >
+        <Chat messages={chatMessages} sendChatMessage={handleMessage} username={session.user.username} />
+      </Popover>
+      {/* Reactions Popover */}
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleCloseChat}
         anchorOrigin={{
           vertical: "top",
           horizontal: "center",
@@ -129,7 +152,7 @@ const Dashboard = () => {
         color="secondary"
         aria-label="add"
         className={classes.fab}
-        onClick={(e) => handleToggle(e)}
+        onClick={(e) => handleToggleChat(e)}
         aria-describedby={id}
       >
         {showChat ? <Close /> : <ChatBubble />}
