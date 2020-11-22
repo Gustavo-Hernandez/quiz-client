@@ -11,6 +11,7 @@ import {
   sendMessage,
   sendReaction
 } from "../../api/socketHandler";
+import Reaction from "./Reaction.js";
 import Chat from "./Chat";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +45,7 @@ const Dashboard = () => {
   const [showChat, setShowChat] = useState(false);
   const [showReactions, setShowReactions] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorChat, setAnchorChat] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
   const classes = useStyles();
 
@@ -164,7 +166,7 @@ const Dashboard = () => {
           horizontal: "left",
         }}
       >
-        <Chat messages={chatMessages} sendChatMessage={handleMessage} username={session.user.username} />
+        <Reaction />
       </Popover>
 
       <Fab
