@@ -9,6 +9,7 @@ import {
   subscribeToChat,
   sendFeedback,
   sendMessage,
+  sendReaction
 } from "../../api/socketHandler";
 import Chat from "./Chat";
 
@@ -41,8 +42,7 @@ const Dashboard = () => {
   } = useContext(QuizContext);
 
   const [showChat, setShowChat] = useState(false);
-  const [showChat, setShowReactions] = useState(false);
-
+  const [showReactions, setShowReactions] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
   const classes = useStyles();
@@ -61,10 +61,22 @@ const Dashboard = () => {
     };
   }, [session.pin, session.user.username]);
 
+  const handleToggleReactions = (event) => {
+    setAnchorEl(event.currentTarget);
+    setShowChat((prev) => !prev);
+  };
+
+
   const handleToggleChat = (event) => {
     setAnchorEl(event.currentTarget);
     setShowChat((prev) => !prev);
   };
+
+  const handleCloseReactions = () => {
+    setShowChat(false);
+    // setAnchorEl(null);
+  };
+
 
   const handleCloseChat = () => {
     setShowChat(false);
@@ -74,7 +86,8 @@ const Dashboard = () => {
   const handleMessage = (value) => {
     sendMessage(session.user.username,value,session.pin);
   };
-  const handleReaction (value) => {
+  
+  const handleReaction = (value) => {
     sendReaction(value,session.pin);
   };
 
@@ -85,6 +98,7 @@ const Dashboard = () => {
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer}>
+
         <Button
           variant="contained"
           onClick={clearSession}
@@ -92,11 +106,13 @@ const Dashboard = () => {
         >
           Leave Session
         </Button>
+
         <ButtonGroup
           color="primary"
           variant="contained"
           aria-label="contained primary button group"
         >
+
           <Tooltip title="This is anonymous, no one will know.">
             <Button
               style={{ fontWeight: "bold" }}
@@ -115,6 +131,7 @@ const Dashboard = () => {
           </Tooltip>
         </ButtonGroup>
       </div>
+
       <Popover
         id={id}
         open={open}
@@ -131,23 +148,25 @@ const Dashboard = () => {
       >
         <Chat messages={chatMessages} sendChatMessage={handleMessage} username={session.user.username} />
       </Popover>
-      {/* Reactions Popover */}
+      
+      {/* Reactions Popover  */}
       <Popover
         id={id}
         open={open}
         anchorEl={anchorEl}
-        onClose={handleCloseChat}
+        onClose={handleCloseReactions}
         anchorOrigin={{
           vertical: "top",
           horizontal: "center",
         }}
         transformOrigin={{
           vertical: "bottom",
-          horizontal: "center",
+          horizontal: "left",
         }}
       >
         <Chat messages={chatMessages} sendChatMessage={handleMessage} username={session.user.username} />
       </Popover>
+
       <Fab
         color="secondary"
         aria-label="add"
@@ -157,6 +176,7 @@ const Dashboard = () => {
       >
         {showChat ? <Close /> : <ChatBubble />}
       </Fab>
+      
     </div>
   );
 };
