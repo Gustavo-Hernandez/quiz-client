@@ -27,6 +27,16 @@ export const subscribeToChat = (cb) => {
   });
 };
 
+export const subscribeToFeedback = (cb) => {
+  if (!socket) {
+    return true;
+  }
+  socket.on("feedback", (msg) => {
+    console.log("Feedback Received");
+    return cb(null, msg);
+  });
+};
+
 export const sendMessage = (sender, message, room) => {
   if (socket) {
     socket.emit("chatMessage", { sender, message, room });
@@ -39,8 +49,8 @@ export const sendReaction = (message, room) => {
   }
 };
 
-export const sendFeedback = (value) => {
+export const sendFeedback = (value, room) => {
   if (socket) {
-    socket.emit("teacher_feedback", value);
+    socket.emit("teacher_feedback", {message: value, room});
   }
 };
