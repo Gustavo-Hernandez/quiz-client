@@ -5,7 +5,7 @@ const useStyles = makeStyles(() => ({
   root: {
     width: "90%",
     wordWrap: "break-word",
-    padding: "3px 0",
+    padding: "3px 0px",
     borderRadius: "8px",
     marginBottom: "5px",
   },
@@ -26,10 +26,12 @@ const useStyles = makeStyles(() => ({
   sender: {
     fontWeight: "bolder",
     fontSize: "0.8rem",
+    padding: "0px 8px"
   },
   message: {
     paddingLeft: "5px",
     fontSize: "0.9rem",
+    padding: "0px 8px"
   },
 }));
 
