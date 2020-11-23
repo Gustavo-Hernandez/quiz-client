@@ -19,6 +19,7 @@ import {
   subscribeToFeedback,
   sendFeedback,
   sendMessage,
+  subscribeToQuiz
 } from "../../api/socketHandler";
 import Chat from "./Chat";
 import Quiz from "./Quiz";
@@ -62,11 +63,13 @@ const Dashboard = () => {
     clearSession,
   } = useContext(QuizContext);
 
+  const {questions, title} = session;
   const [showChat, setShowChat] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
+  const [showQuiz, setShowQuiz] = useState(false);
   const classes = useStyles();
 
   //Handle Connection
@@ -77,6 +80,12 @@ const Dashboard = () => {
         return;
       }
       setChatMessages((oldChats) => [...oldChats, data]);
+    });
+    subscribeToQuiz((err, data) => {
+      if (err) {
+        return;
+      }
+      setShowQuiz(true);
     });
     subscribeToFeedback((err, data) => {
       if (err) {
@@ -159,7 +168,7 @@ const Dashboard = () => {
         </ButtonGroup>
       </div>
       <div className={classes.quizContainer}>
-        <Quiz />
+        {showQuiz && <Quiz title={title} />}
       </div>
       <Popover
         id={id}
