@@ -48,6 +48,11 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   },
+  fabReaction: {
+    position: "absolute",
+    bottom: theme.spacing(2),
+    left: theme.spacing(2),
+  },
   quizContainer: {
     width: "100%",
     height: "70%",
@@ -239,7 +244,15 @@ const Dashboard = () => {
       >
         {showChat ? <Close /> : <ChatBubble />}
       </Fab>
-      
+      <Fab
+        color="primary"
+        aria-label="add"
+        className={classes.fabReaction}
+        onClick={(e) => handleToggleReactions(e)}
+        aria-describedby={idReaction}
+      >
+        {showReactions ? <Close /> : <ChatBubble />}
+      </Fab>
     </div>
   );
 };
