@@ -40,7 +40,7 @@ const Reaction = ({ sendReaction }) => {
   return (
     // <div>{buttons}</div>
     <Card>
-      <CardHeader title="Chat" className={classes.header} />
+      <CardHeader title="Reactions!" className={classes.header} />
       <Divider />
       <CardContent className={classes.emojiContainer}>{buttons}</CardContent>
       <CardActions className={classes.actionContainer}>

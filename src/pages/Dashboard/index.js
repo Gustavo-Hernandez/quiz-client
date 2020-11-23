@@ -132,8 +132,8 @@ const Dashboard = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  const openReaction = Boolean(anchorChat);
-  const idReaction = open ? "simple-popover" : undefined;
+  const openReaction = Boolean(anchorReaction);
+  const idReaction = openReaction ? "simple-popover" : undefined;
 
   return (
     <div className={classes.root}>
