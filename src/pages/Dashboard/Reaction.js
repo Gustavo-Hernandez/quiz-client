@@ -33,9 +33,14 @@ const Reaction = ({ sendReaction }) => {
   const classes = useStyles();
   const emojis = ["👹", "😎"];
   const buttons = emojis.map((val, index) => (
-    <button value={val} key={index}>
+    <Button
+      variant="outlined"
+      onclick={sendReaction(val)}
+      value={val}
+      key={index}
+    >
       {val}
-    </button>
+    </Button>
   ));
   return (
     // <div>{buttons}</div>
@@ -43,14 +48,6 @@ const Reaction = ({ sendReaction }) => {
       <CardHeader title="Reactions!" className={classes.header} />
       <Divider />
       <CardContent className={classes.emojiContainer}>{buttons}</CardContent>
-      <CardActions className={classes.actionContainer}>
-        <Button
-          variant="contained"
-          color="secondary"
-          className={classes.button}
-          onClick={sendReaction}
-        ></Button>
-      </CardActions>
     </Card>
   );
 };
