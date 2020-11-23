@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { Context as QuizContext } from "../../context/QuizContext";
 import { makeStyles } from "@material-ui/core/styles";
 import { ChatBubble, Close } from "@material-ui/icons";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 import {
   Button,
   ButtonGroup,
@@ -19,7 +20,7 @@ import {
   subscribeToFeedback,
   sendFeedback,
   sendMessage,
-  sendReaction
+  sendReaction,
 } from "../../api/socketHandler";
 import Reaction from "./Reaction.js";
 import Chat from "./Chat";
@@ -75,6 +76,7 @@ const Dashboard = () => {
   const [snackMessage, setSnackMessage] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorChat, setAnchorChat] = useState(null);
+  const [anchorReaction, setAnchorReaction] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
   const classes = useStyles();
 
@@ -100,10 +102,9 @@ const Dashboard = () => {
   }, [session.pin, session.user.username]);
 
   const handleToggleReactions = (event) => {
-    setAnchorEl(event.currentTarget);
-    setShowChat((prev) => !prev);
+    setAnchorReaction(event.currentTarget);
+    setShowReactions((prev) => !prev);
   };
-
 
   const handleToggleChat = (event) => {
     setAnchorEl(event.currentTarget);
@@ -111,10 +112,10 @@ const Dashboard = () => {
   };
 
   const handleCloseReactions = () => {
-    setShowChat(false);
+    setShowReactions(false);
+    setAnchorReaction(null);
     // setAnchorEl(null);
   };
-
 
   const handleCloseChat = () => {
     setShowChat(false);
@@ -124,11 +125,10 @@ const Dashboard = () => {
   const handleMessage = (value) => {
     sendMessage(session.user.username, value, session.pin);
   };
-  
-  const handleReaction = (value) => {
-    sendReaction(value,session.pin);
-  };
 
+  const handleReaction = (value) => {
+    sendReaction(value, session.pin);
+  };
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -156,7 +156,6 @@ const Dashboard = () => {
         }
       />
       <div className={classes.buttonContainer}>
-
         <Button
           variant="contained"
           onClick={clearSession}
@@ -170,7 +169,6 @@ const Dashboard = () => {
           variant="contained"
           aria-label="contained primary button group"
         >
-
           <Tooltip title="This is anonymous, no one will know.">
             <Button
               style={{ fontWeight: "bold" }}
@@ -212,12 +210,12 @@ const Dashboard = () => {
           username={session.user.username}
         />
       </Popover>
-      
+
       {/* Reactions Popover  */}
       <Popover
         id={idReaction}
         open={openReaction}
-        anchorEl={anchorEl}
+        anchorEl={anchorReaction}
         onClose={handleCloseReactions}
         anchorOrigin={{
           vertical: "top",
@@ -228,11 +226,7 @@ const Dashboard = () => {
           horizontal: "left",
         }}
       >
-        <Reaction 
-          sendReaction={handleReaction}
-
-        
-        />
+        <Reaction sendReaction={handleReaction} />
       </Popover>
 
       <Fab
@@ -251,7 +245,7 @@ const Dashboard = () => {
         onClick={(e) => handleToggleReactions(e)}
         aria-describedby={idReaction}
       >
-        {showReactions ? <Close /> : <ChatBubble />}
+        {showReactions ? <Close /> : <FavoriteIcon />}
       </Fab>
     </div>
   );
