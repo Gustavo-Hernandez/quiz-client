@@ -36,7 +36,15 @@ export const subscribeToFeedback = (cb) => {
     return cb(null, msg);
   });
 };
-
+export const subscribeToReactions = (cb) => {
+  if (!socket) {
+    return true;
+  }
+  socket.on("reactionMessage", (msg) => {
+    console.log("reactionRecieved  "+msg.message);
+    cb(null, msg);
+  });
+};
 export const sendMessage = (sender, message, room) => {
   if (socket) {
     socket.emit("chatMessage", { sender, message, room });

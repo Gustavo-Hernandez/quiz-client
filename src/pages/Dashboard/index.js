@@ -18,6 +18,7 @@ import {
   disconnectSocket,
   subscribeToChat,
   subscribeToFeedback,
+  subscribeToReactions,
   sendFeedback,
   sendMessage,
   sendReaction,
@@ -25,6 +26,7 @@ import {
 import Reaction from "./Reaction.js";
 import Chat from "./Chat";
 import Quiz from "./Quiz";
+// var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,12 +74,15 @@ const Dashboard = () => {
 
   const [showChat, setShowChat] = useState(false);
   const [showReactions, setShowReactions] = useState(false);
+  const [showSnackbarReactions, setShowSnackbarReactions] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
+  const [snackMessageReactions, setSnackMessageReactions] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorChat, setAnchorChat] = useState(null);
   const [anchorReaction, setAnchorReaction] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
+  const [reactions, setReactions] = useState([]);
   const classes = useStyles();
 
   //Handle Connection
@@ -95,6 +100,14 @@ const Dashboard = () => {
       }
       setShowSnackbar(true);
       setSnackMessage(data);
+    });
+    subscribeToReactions((err, data) => {
+      if (err) {
+        return;
+      }        
+      setShowSnackbarReactions(true);
+      setSnackMessageReactions(data.message);
+
     });
     return () => {
       disconnectSocket();
@@ -127,8 +140,28 @@ const Dashboard = () => {
   };
 
   const handleReaction = (value) => {
+    console.log(value);
     sendReaction(value, session.pin);
   };
+
+  const handleAddReaction = (value) => {
+    console.log(reactions);
+    setReactions((state) => {
+      console.log(state);
+      state.push(value);
+      return state;
+    });
+  };
+
+  const handleRemoveReaction = () => {
+    setReactions((state) => {
+      console.log(state);
+      state.shift();
+      return state;
+    });
+  };
+
+  const reactionsSpan = reactions.map((val) => <span>{val.message}</span>);
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -247,6 +280,25 @@ const Dashboard = () => {
       >
         {showReactions ? <Close /> : <FavoriteIcon />}
       </Fab>
+      <div className={classes.reactionContainer}>{reactionsSpan}</div>
+       <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        open={showSnackbarReactions}
+        autoHideDuration={1500}
+        onClose={() => setShowSnackbarReactions(false)}
+        message={snackMessageReactions}
+        TransitionComponent={Slide}
+        action={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setShowSnackbarReactions(false)}
+          >
+            <Close fontSize="small" />
+          </IconButton>
+        }
+      />
     </div>
   );
 };

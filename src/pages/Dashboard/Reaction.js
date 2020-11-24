@@ -1,9 +1,9 @@
 import React from "react";
 import {
   Card,
-  TextField,
+  // TextField,
   CardContent,
-  CardActions,
+  // CardActions,
   Button,
   makeStyles,
   CardHeader,
@@ -31,11 +31,14 @@ const useStyles = makeStyles((theme) => ({
 
 const Reaction = ({ sendReaction }) => {
   const classes = useStyles();
-  const emojis = ["👹", "😎"];
+  const emojis = ["👹", "😎","😂","😬","😍","😡","🙁","😱","👽",
+                  "👌","🕵","🙅","🙋","🤔","🤯","👍🏻","👎","🍖","🍻",
+                  "🍄",
+                ];
   const buttons = emojis.map((val, index) => (
     <Button
       variant="outlined"
-      onclick={sendReaction(val)}
+      onClick={()=>{sendReaction(val)}}
       value={val}
       key={index}
     >
