@@ -45,6 +45,29 @@ export const subscribeToReactions = (cb) => {
     cb(null, msg);
   });
 };
+
+
+export const subscribeToQuiz = (cb) => {
+  if (!socket) {
+    return true;
+  }
+  socket.on("quiz_start", (val) => {
+    console.log("Quiz Starting");
+    return cb(null, val);
+  });
+};
+
+export const subscribeToQuestions = (cb) => {
+  if (!socket) {
+    return true;
+  }
+  socket.on("question", (val) => {
+    console.log("Question received");
+    return cb(null, val);
+  });
+};
+
+
 export const sendMessage = (sender, message, room) => {
   if (socket) {
     socket.emit("chatMessage", { sender, message, room });

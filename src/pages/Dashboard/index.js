@@ -22,6 +22,8 @@ import {
   sendFeedback,
   sendMessage,
   sendReaction,
+  subscribeToQuiz,
+  subscribeToQuestions
 } from "../../api/socketHandler";
 import Reaction from "./Reaction.js";
 import Chat from "./Chat";
@@ -72,6 +74,7 @@ const Dashboard = () => {
     clearSession,
   } = useContext(QuizContext);
 
+  const { questions, title } = session;
   const [showChat, setShowChat] = useState(false);
   const [showReactions, setShowReactions] = useState(false);
   const [showSnackbarReactions, setShowSnackbarReactions] = useState(false);
@@ -83,6 +86,11 @@ const Dashboard = () => {
   const [anchorReaction, setAnchorReaction] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
   const [reactions, setReactions] = useState([]);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState({
+    pregunta: "",
+    respuestas: [{ ans: "" }, { ans: "" }, { ans: "" }, { ans: "" }],
+  });
   const classes = useStyles();
 
   //Handle Connection
@@ -93,6 +101,18 @@ const Dashboard = () => {
         return;
       }
       setChatMessages((oldChats) => [...oldChats, data]);
+    });
+    subscribeToQuiz((err, data) => {
+      if (err) {
+        return;
+      }
+      setShowQuiz(true);
+    });
+    subscribeToQuestions((err, data) => {
+      if (err) {
+        return;
+      }
+      setCurrentQuestion(data);
     });
     subscribeToFeedback((err, data) => {
       if (err) {
@@ -221,7 +241,7 @@ const Dashboard = () => {
         </ButtonGroup>
       </div>
       <div className={classes.quizContainer}>
-        <Quiz />
+        {showQuiz && <Quiz title={title} question={currentQuestion} />}
       </div>
       <Popover
         id={id}
