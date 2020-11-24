@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -44,54 +44,67 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     "&:hover": {
       cursor: "pointer",
-      boxShadow: "0px 0px 2px 1px rgba(0,0,0,0.45)"
+      boxShadow: "0px 0px 2px 1px rgba(0,0,0,0.45)",
     },
   },
 }));
 
-const Quiz = ({ question, title }) => {
+const Quiz = ({ question, title, handleSelection }) => {
   const classes = useStyles();
+  const [selected, setSelected] = useState(false);
+
+  const handleClick = (value) => {
+    //handleSelection(value);
+    setSelected(true);
+  };
+
   return (
     <div className={classes.root}>
       <h3 className={classes.questionHeader}>{title}</h3>
       <div className={classes.questionContainer}>
-      <div className={classes.question}>{question.pregunta}</div>
+        <div className={classes.question}>{question.pregunta}</div>
       </div>
       <div className={classes.optionsContainer}>
-        <Grid container spacing={1} justify="center">
-          <Grid item xs={5}>
-            <button
-              className={classes.quizOption}
-              style={{ backgroundColor: "#f44336" }}
-            >
-              A) {question.respuestas[0].ans}
-            </button>
+        {!selected && (
+          <Grid container spacing={1} justify="center">
+            <Grid item xs={5}>
+              <button
+                onClick={() => handleClick("")}
+                className={classes.quizOption}
+                style={{ backgroundColor: "#f44336" }}
+              >
+                A) {question.respuestas[0].ans}
+              </button>
+            </Grid>
+            <Grid item xs={5}>
+              <button
+                onClick={() => handleClick("")}
+                className={classes.quizOption}
+                style={{ backgroundColor: "#FFC107" }}
+              >
+                B){question.respuestas[1].ans}
+              </button>
+            </Grid>
+            <Grid item xs={5}>
+              <button
+                onClick={() => handleClick("")}
+                className={classes.quizOption}
+                style={{ backgroundColor: "#2196F3" }}
+              >
+                C) {question.respuestas[2].ans}
+              </button>
+            </Grid>
+            <Grid item xs={5}>
+              <button
+                onClick={() => handleClick("")}
+                className={classes.quizOption}
+                style={{ backgroundColor: "#8BC34A" }}
+              >
+                D) {question.respuestas[3].ans}
+              </button>
+            </Grid>
           </Grid>
-          <Grid item xs={5}>
-            <button
-              className={classes.quizOption}
-              style={{ backgroundColor: "#FFC107" }}
-            >
-              B){question.respuestas[1].ans}
-            </button>
-          </Grid>
-          <Grid item xs={5}>
-            <button
-              className={classes.quizOption}
-              style={{ backgroundColor: "#2196F3" }}
-            >
-              C) {question.respuestas[2].ans}
-            </button>
-          </Grid>
-          <Grid item xs={5}>
-            <button
-              className={classes.quizOption}
-              style={{ backgroundColor: "#8BC34A" }}
-            >
-              D) {question.respuestas[3].ans}
-            </button>
-          </Grid>
-        </Grid>
+        )}
       </div>
     </div>
   );

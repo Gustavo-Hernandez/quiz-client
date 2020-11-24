@@ -71,6 +71,7 @@ const Dashboard = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [quizEnding, setQuizEnding] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState({
     pregunta: "",
     respuestas: [{ ans: "" }, { ans: "" }, { ans: "" }, { ans: "" }],
@@ -91,13 +92,13 @@ const Dashboard = () => {
       if (err) {
         return;
       }
-      setShowQuiz(true);
+      setShowQuiz(data);
     });
-    subscribeToQuestions((err, data) => {
+    subscribeToQuestions((err, {question}) => {
       if (err) {
         return;
       }
-      setCurrentQuestion(data);
+      setCurrentQuestion(question);
     });
     subscribeToFeedback((err, data) => {
       if (err) {
