@@ -209,7 +209,7 @@ const Dashboard = () => {
           <Tooltip title="This is anonymous, no one will know.">
             <Button
               style={{ fontWeight: "bold" }}
-              onClick={() => sendFeedback("I'm confused!", session.pin)}
+              onClick={() => sendFeedback("Someone is confused.", session.pin)}
             >
               I'm confused
             </Button>
@@ -248,7 +248,6 @@ const Dashboard = () => {
         />
       </Popover>
 
-      {/* Reactions Popover  */}
       <Popover
         id={idReaction}
         open={openReaction}
@@ -284,9 +283,9 @@ const Dashboard = () => {
       >
         {showReactions ? <Close /> : <FavoriteIcon />}
       </Fab>
-      {/* <div className={classes.reactionContainer}>{reactionsSpan}</div> */}
-       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+    
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }} 
         open={showSnackbarReactions}
         autoHideDuration={1500}
         onClose={() => setShowSnackbarReactions(false)}
