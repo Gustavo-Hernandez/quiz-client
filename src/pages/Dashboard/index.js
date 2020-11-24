@@ -280,7 +280,7 @@ const Dashboard = () => {
       >
         {showReactions ? <Close /> : <FavoriteIcon />}
       </Fab>
-      <div className={classes.reactionContainer}>{reactionsSpan}</div>
+      {/* <div className={classes.reactionContainer}>{reactionsSpan}</div> */}
        <Snackbar
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={showSnackbarReactions}
