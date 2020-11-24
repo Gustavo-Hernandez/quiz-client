@@ -24,7 +24,9 @@ import {
   sendReaction,
   subscribeToQuiz,
   subscribeToQuestions,
-  sendAnswer
+  sendAnswer,
+  relog,
+  subscribeToExit
 } from "../../api/socketHandler";
 import Reaction from "./Reaction.js";
 import Chat from "./Chat";
@@ -95,6 +97,7 @@ const Dashboard = () => {
   //Handle Connection
   useEffect(() => {
     initiateSocket(session.pin, session.user.username);
+    relog(session.pin,session.user.localId);
     subscribeToChat((err, data) => {
       if (err) {
         return;
@@ -106,6 +109,12 @@ const Dashboard = () => {
         return;
       }
       setShowQuiz(data);
+    });
+    subscribeToExit((err) => {
+      if (err) {
+        return;
+      }
+      clearSession();
     });
     subscribeToQuestions((err, {question}) => {
       if (err) {

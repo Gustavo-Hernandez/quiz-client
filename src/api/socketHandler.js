@@ -67,6 +67,15 @@ export const subscribeToQuestions = (cb) => {
   });
 };
 
+export const subscribeToExit = (cb) => {
+  if (!socket) {
+    return true;
+  }
+  socket.on("end_session", () => {
+    return cb(null);
+  });
+};
+
 
 export const sendMessage = (sender, message, room) => {
   if (socket) {
@@ -89,5 +98,11 @@ export const sendFeedback = (value, room) => {
 export const sendAnswer = (uid, correct, room) => {
   if (socket) {
     socket.emit("answer", { uid, correct, room });
+  }
+};
+
+export const relog = (room, uid) => {
+  if (socket) {
+    socket.emit("relog", {room, uid});
   }
 };
