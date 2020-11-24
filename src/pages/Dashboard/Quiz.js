@@ -55,7 +55,7 @@ const Quiz = ({ question, title }) => {
     <div className={classes.root}>
       <h3 className={classes.questionHeader}>{title}</h3>
       <div className={classes.questionContainer}>
-        <div className={classes.question}>This is a question</div>
+      <div className={classes.question}>{question.pregunta}</div>
       </div>
       <div className={classes.optionsContainer}>
         <Grid container spacing={1} justify="center">
@@ -64,7 +64,7 @@ const Quiz = ({ question, title }) => {
               className={classes.quizOption}
               style={{ backgroundColor: "#f44336" }}
             >
-              A) Option 1
+              A) {question.respuestas[0].ans}
             </button>
           </Grid>
           <Grid item xs={5}>
@@ -72,7 +72,7 @@ const Quiz = ({ question, title }) => {
               className={classes.quizOption}
               style={{ backgroundColor: "#FFC107" }}
             >
-              B) Option 2
+              B){question.respuestas[1].ans}
             </button>
           </Grid>
           <Grid item xs={5}>
@@ -80,7 +80,7 @@ const Quiz = ({ question, title }) => {
               className={classes.quizOption}
               style={{ backgroundColor: "#2196F3" }}
             >
-              C) Option 3
+              C) {question.respuestas[2].ans}
             </button>
           </Grid>
           <Grid item xs={5}>
@@ -88,7 +88,7 @@ const Quiz = ({ question, title }) => {
               className={classes.quizOption}
               style={{ backgroundColor: "#8BC34A" }}
             >
-              D) Option 4
+              D) {question.respuestas[3].ans}
             </button>
           </Grid>
         </Grid>

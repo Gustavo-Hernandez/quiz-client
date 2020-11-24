@@ -47,6 +47,16 @@ export const subscribeToQuiz = (cb) => {
   });
 };
 
+export const subscribeToQuestions = (cb) => {
+  if (!socket) {
+    return true;
+  }
+  socket.on("question", (val) => {
+    console.log("Question received");
+    return cb(null, val);
+  });
+};
+
 export const sendMessage = (sender, message, room) => {
   if (socket) {
     socket.emit("chatMessage", { sender, message, room });
