@@ -41,7 +41,7 @@ export const subscribeToReactions = (cb) => {
     return true;
   }
   socket.on("reactionMessage", (msg) => {
-    console.log("reactionRecieved  "+msg.message);
+    console.log("reactionRecieved  "+ msg);
     cb(null, msg);
   });
 };
@@ -83,5 +83,11 @@ export const sendReaction = (message, room) => {
 export const sendFeedback = (value, room) => {
   if (socket) {
     socket.emit("teacher_feedback", {message: value, room});
+  }
+};
+
+export const sendAnswer = (uid, correct, room) => {
+  if (socket) {
+    socket.emit("answer", { uid, correct, room });
   }
 };

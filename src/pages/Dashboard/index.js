@@ -23,7 +23,8 @@ import {
   sendMessage,
   sendReaction,
   subscribeToQuiz,
-  subscribeToQuestions
+  subscribeToQuestions,
+  sendAnswer
 } from "../../api/socketHandler";
 import Reaction from "./Reaction.js";
 import Chat from "./Chat";
@@ -74,7 +75,7 @@ const Dashboard = () => {
     clearSession,
   } = useContext(QuizContext);
 
-  const { questions, title } = session;
+  const { title } = session;
   const [showChat, setShowChat] = useState(false);
   const [showReactions, setShowReactions] = useState(false);
   const [showSnackbarReactions, setShowSnackbarReactions] = useState(false);
@@ -82,12 +83,9 @@ const Dashboard = () => {
   const [snackMessage, setSnackMessage] = useState("");
   const [snackMessageReactions, setSnackMessageReactions] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
-  const [anchorChat, setAnchorChat] = useState(null);
   const [anchorReaction, setAnchorReaction] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
-  const [reactions, setReactions] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
-  const [quizEnding, setQuizEnding] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState({
     pregunta: "",
     respuestas: [{ ans: "" }, { ans: "" }, { ans: "" }, { ans: "" }],
@@ -125,10 +123,9 @@ const Dashboard = () => {
     subscribeToReactions((err, data) => {
       if (err) {
         return;
-      }        
+      }     
       setShowSnackbarReactions(true);
-      setSnackMessageReactions(data.message);
-
+      setSnackMessageReactions(data);
     });
     return () => {
       disconnectSocket();
@@ -148,7 +145,6 @@ const Dashboard = () => {
   const handleCloseReactions = () => {
     setShowReactions(false);
     setAnchorReaction(null);
-    // setAnchorEl(null);
   };
 
   const handleCloseChat = () => {
@@ -161,28 +157,15 @@ const Dashboard = () => {
   };
 
   const handleReaction = (value) => {
-    console.log(value);
     sendReaction(value, session.pin);
   };
 
-  const handleAddReaction = (value) => {
-    console.log(reactions);
-    setReactions((state) => {
-      console.log(state);
-      state.push(value);
-      return state;
-    });
+  const answerQuestion = (value) => {
+    let uid = session.user.localId
+    sendAnswer(uid,value,session.pin);
   };
 
-  const handleRemoveReaction = () => {
-    setReactions((state) => {
-      console.log(state);
-      state.shift();
-      return state;
-    });
-  };
 
-  const reactionsSpan = reactions.map((val) => <span>{val.message}</span>);
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -242,7 +225,7 @@ const Dashboard = () => {
         </ButtonGroup>
       </div>
       <div className={classes.quizContainer}>
-        {showQuiz && <Quiz title={title} question={currentQuestion} />}
+        {showQuiz && <Quiz title={title} question={currentQuestion} handleSelection={answerQuestion} />}
       </div>
       <Popover
         id={id}
@@ -303,7 +286,7 @@ const Dashboard = () => {
       </Fab>
       {/* <div className={classes.reactionContainer}>{reactionsSpan}</div> */}
        <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={showSnackbarReactions}
         autoHideDuration={1500}
         onClose={() => setShowSnackbarReactions(false)}

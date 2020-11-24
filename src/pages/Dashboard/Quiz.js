@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -54,9 +54,13 @@ const Quiz = ({ question, title, handleSelection }) => {
   const [selected, setSelected] = useState(false);
 
   const handleClick = (value) => {
-    //handleSelection(value);
+    handleSelection(question.respuestas[value].corr);
     setSelected(true);
   };
+
+  useEffect(()=>{
+    setSelected(false);
+  },[question]);
 
   return (
     <div className={classes.root}>
@@ -69,7 +73,7 @@ const Quiz = ({ question, title, handleSelection }) => {
           <Grid container spacing={1} justify="center">
             <Grid item xs={5}>
               <button
-                onClick={() => handleClick("")}
+                onClick={() => handleClick(0)}
                 className={classes.quizOption}
                 style={{ backgroundColor: "#f44336" }}
               >
@@ -78,7 +82,7 @@ const Quiz = ({ question, title, handleSelection }) => {
             </Grid>
             <Grid item xs={5}>
               <button
-                onClick={() => handleClick("")}
+                onClick={() => handleClick(1)}
                 className={classes.quizOption}
                 style={{ backgroundColor: "#FFC107" }}
               >
@@ -87,7 +91,7 @@ const Quiz = ({ question, title, handleSelection }) => {
             </Grid>
             <Grid item xs={5}>
               <button
-                onClick={() => handleClick("")}
+                onClick={() => handleClick(2)}
                 className={classes.quizOption}
                 style={{ backgroundColor: "#2196F3" }}
               >
@@ -96,7 +100,7 @@ const Quiz = ({ question, title, handleSelection }) => {
             </Grid>
             <Grid item xs={5}>
               <button
-                onClick={() => handleClick("")}
+                onClick={() => handleClick(3)}
                 className={classes.quizOption}
                 style={{ backgroundColor: "#8BC34A" }}
               >
